@@ -1,102 +1,70 @@
-<!-- ====== HEADER / BANNER ====== -->
 <div align="center">
-<img src="./assets/architecture_banner.png" width="100%" alt="OpenClaw Docs MCP Architecture Banner" />
+  <img src="./assets/architecture_banner.png" width="100%" alt="OpenClaw Docs MCP Architecture Banner" style="border-radius: 10px;" />
 
-# 📖 OpenClaw Docs MCP
+  <br />
+  <br />
 
-### `< Hybrid Search />` &nbsp;•&nbsp; pgvector &nbsp;•&nbsp; 🤖 FastMCP
+  # 📖 OpenClaw Docs MCP
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=00E5FF&center=true&vCenter=true&width=600&lines=MCP+RAG+Server+for+OpenClaw+Docs;Powered+by+PostgreSQL+and+pgvector;Exposing+hybrid+search+tools+over+HTTP;Code,+Learn,+Automate,+Repeat" alt="Typing SVG" />
+  **An MCP RAG server providing powerful hybrid search over OpenClaw documentation**
 
+  <p align="center">
+    <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+    <img src="https://img.shields.io/badge/PostgreSQL-15+-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/pgvector-Enabled-8B0000?style=for-the-badge" alt="pgvector" />
+    <img src="https://img.shields.io/badge/FastMCP-Supported-00E5FF?style=for-the-badge&logo=fastapi&logoColor=black" alt="FastMCP" />
+  </p>
 </div>
 
 ---
 
-## 🚀 What is this?
+> **OpenClaw Docs MCP** indexes the [OpenClaw documentation](https://docs.openclaw.ai) into PostgreSQL using **pgvector** and exposes powerful hybrid search tools via **HTTP** using [FastMCP](https://gofastmcp.com).
 
-```python
-class OpenClawDocsMCP(FastMCP):
-    def __init__(self):
-        self.name        = "OpenClaw Docs MCP"
-        self.purpose     = "RAG server for OpenClaw documentation"
-        self.stack       = ["Python", "FastMCP", "PostgreSQL", "pgvector"]
-        self.superpower  = "Hybrid search (semantic + full-text) across English docs"
+## ✨ Key Features
 
-    def features(self):
-        return [
-            "Indexes docs into PostgreSQL",
-            "Exposes 13 MCP search tools via HTTP",
-            "Incremental sync via content hash"
-        ]
-```
-
-This is an **MCP RAG server** tailored for the [OpenClaw documentation](https://docs.openclaw.ai). It indexes English documentation pages into PostgreSQL using **pgvector** and exposes hybrid search tools via **HTTP** using [FastMCP](https://gofastmcp.com).
-
-## ✨ Features
-- 🔍 **Hybrid Search:** Combines semantic (pgvector) and full-text search across ~721 English documentation pages.
-- 🧰 **13 MCP Tools:** Fully equipped with search, get_chunk, navigation (next/prev), page outlines, and index statistics.
-- 🔌 **HTTP Transport:** Exposed over HTTP with API key authentication for secure access.
-- 🔄 **Incremental Sync:** Smart syncing via content hashing (no redundant updates).
-- 🛠️ **System Integration:** Ready for production with a `systemd` service and optional daily sync timer.
-
-## 🛠️ Tech Stack
-<table align="center"> 
-  <tr> 
-    <td align="center" width="120"> 
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="45" /><br><b>Python 3.11+</b> 
-    </td> 
-    <td align="center" width="120"> 
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="45" /><br><b>PostgreSQL 15+</b> 
-    </td> 
-    <td align="center" width="120"> 
-      <img src="https://raw.githubusercontent.com/pgvector/pgvector/master/logo.svg" width="45" /><br><b>pgvector</b> 
-    </td> 
-    <td align="center" width="120"> 
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg" width="45" style="filter: invert(1);" /><br><b>OpenAI API</b> 
-    </td> 
-  </tr> 
-</table>
+*   🧠 **Hybrid Search:** Combines semantic (pgvector) and full-text search across ~721 English documentation pages.
+*   🛠️ **13 MCP Tools:** Fully equipped with search, `get_chunk`, navigation (next/prev), page outlines, and index statistics.
+*   ⚡ **HTTP Transport:** Exposed securely over HTTP with API key authentication.
+*   🔄 **Incremental Sync:** Smart content-hash syncing to avoid redundant updates.
+*   ⚙️ **Production Ready:** Includes `systemd` service files and an optional daily sync timer.
 
 ## 📋 Requirements
 
-- **Python:** `3.11+`
-- **Database:** `PostgreSQL 15+` with the [pgvector](https://github.com/pgvector/pgvector) extension installed.
-- **AI Access:** OpenAI API key (for embedding generation using `text-embedding-3-small`).
+*   **Python:** `3.11+`
+*   **Database:** `PostgreSQL 15+` with the [pgvector](https://github.com/pgvector/pgvector) extension.
+*   **AI:** OpenAI API key (for embedding generation using `text-embedding-3-small`).
 
 ---
 
-## ⚙️ Setup & Installation
+## 🚀 Setup & Installation
 
-**1. Clone and Setup Environment**
+### 1. Environment Setup
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-**2. Configure Environment Variables**
+### 2. Configuration
 ```bash
 cp config.env.example config.env
-# Edit config.env and fill in: DATABASE_URL, OPENAI_API_KEY, API_KEY
+# Edit config.env with: DATABASE_URL, OPENAI_API_KEY, API_KEY
 ```
 
-**3. Initialize Database & Run Migrations**
+### 3. Database & Ingestion
 ```bash
-# Create an empty database in PostgreSQL, then run:
+# Run migrations (ensure your database exists)
 alembic upgrade head
-```
 
-**4. Index the Documentation**
-```bash
-# Crawls the sitemap and indexes content (~5-15 min)
+# Crawl sitemap and index content (~5-15 min)
 openclaw-docs-mcp ingest --full
 ```
 
-**5. Start the MCP Server**
+### 4. Run the Server
 ```bash
 openclaw-docs-mcp serve
 ```
-> The server runs at `http://0.0.0.0:8000/mcp` (configurable via `MCP_PORT` in `config.env`).
+> 📍 Server runs at `http://0.0.0.0:8000/mcp` (configurable via `MCP_PORT`).
 
 ---
 
@@ -123,25 +91,21 @@ openclaw-docs-mcp serve
 
 ## 🔌 Cursor Configuration
 
-To use this MCP server with Cursor, add it to your configuration:
-
 ### 🏠 Localhost (same machine)
-
 ```json
 {
   "mcpServers": {
     "openclaw-docs": {
       "url": "http://127.0.0.1:8000/mcp",
       "headers": {
-        "Authorization": "YOUR_API_KEY"
+        "Authorization": "***"
       }
     }
   }
 }
 ```
 
-### 🌍 Remote (e.g., via Cloudflare tunnel)
-
+### 🌍 Remote (e.g., Cloudflare tunnel)
 ```json
 {
   "mcpServers": {
@@ -162,9 +126,9 @@ To use this MCP server with Cursor, add it to your configuration:
 
 ---
 
-## 🚀 systemd Deployment
+## ⚙️ systemd Deployment
 
-For a robust production setup, use `systemd` to manage the server and automatic syncs:
+For automated management and background syncing:
 
 ```bash
 sudo cp deploy/openclaw-docs-mcp.service /etc/systemd/system/
@@ -176,8 +140,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now openclaw-docs-mcp
 sudo systemctl enable --now openclaw-docs-mcp-sync.timer
 ```
-
-> **Tip:** Set `SYNC_ENABLED=true` and `SYNC_SCHEDULE=daily` in `config.env`.
+> 💡 **Tip:** Set `SYNC_ENABLED=true` and `SYNC_SCHEDULE=daily` in `config.env`.
 
 ---
 
@@ -192,8 +155,7 @@ alembic upgrade head             # Apply DB migrations
 ```
 
 ---
-
 <div align="center">
-  <b>License: MIT</b><br>
-  <i>Built to make AI smarter about its own documentation.</i>
+  <i>Built to make AI smarter about its own documentation.</i><br>
+  <b>License: MIT</b>
 </div>
