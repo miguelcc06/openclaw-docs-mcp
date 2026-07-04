@@ -10,7 +10,7 @@ class ApiKeyMiddleware(Middleware):
 
     async def on_request(self, context: MiddlewareContext, call_next):
         settings = get_settings()
-        headers = get_http_headers() or {}
+        headers = get_http_headers(include={"authorization", "x-api-key"})
         token = self._extract_token(headers)
         if not token or token != settings.api_key:
             raise ToolError("Unauthorized: invalid or missing API key")
