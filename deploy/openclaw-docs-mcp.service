@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenClaw Docs MCP RAG Server
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=miguelcc06
+WorkingDirectory=/home/miguelcc06/openclaw-docs-mcp
+EnvironmentFile=/home/miguelcc06/openclaw-docs-mcp/config.env
+ExecStart=/home/miguelcc06/openclaw-docs-mcp/.venv/bin/openclaw-docs-mcp serve
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

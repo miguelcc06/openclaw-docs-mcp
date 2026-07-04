@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenClaw Docs MCP incremental sync
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=miguelcc06
+WorkingDirectory=/home/miguelcc06/openclaw-docs-mcp
+EnvironmentFile=/home/miguelcc06/openclaw-docs-mcp/config.env
+ExecStart=/home/miguelcc06/openclaw-docs-mcp/deploy/sync-wrapper.sh
