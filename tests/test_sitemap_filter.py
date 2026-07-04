@@ -13,6 +13,16 @@ def _patch_settings(monkeypatch):
     get_settings.cache_clear()
 
 
+def test_filter_english_urls_excludes_locale_roots():
+    urls = [
+        "https://docs.openclaw.ai/ar",
+        "https://docs.openclaw.ai/gateway/configuration",
+    ]
+    filtered = filter_english_urls(urls)
+    assert "https://docs.openclaw.ai/ar" not in filtered
+    assert "https://docs.openclaw.ai/gateway/configuration" in filtered
+
+
 def test_filter_english_urls_excludes_locales():
     urls = [
         "https://docs.openclaw.ai/gateway/configuration",
@@ -29,6 +39,11 @@ def test_filter_english_urls_excludes_locales():
 
 def test_url_to_path():
     assert url_to_path("https://docs.openclaw.ai/gateway/configuration") == "/gateway/configuration"
+
+
+def test_is_redirect_page_with_frontmatter():
+    content = "---\ntitle: Foo\nsummary: Redirect to /gateway/configuration\n---\n\n# Foo\n"
+    assert is_redirect_page(content)
 
 
 def test_is_redirect_page():

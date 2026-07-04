@@ -6,8 +6,12 @@ import httpx
 from openclaw_docs_mcp.config import get_settings
 
 SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+LOCALE_CODES = {
+    "ar", "de", "es", "fr", "ja-JP", "ko", "pt-BR", "ru", "uk", "zh-CN", "zh-TW",
+    "hi", "id", "it", "nl", "pl", "tr", "vi", "fa", "th",
+}
 LOCALE_PATTERN = re.compile(
-    r"^https://docs\.openclaw\.ai/(ar|de|es|fr|ja-JP|ko|pt-BR|ru|uk|zh-CN|zh-TW|hi|id|it|nl|pl|tr|vi|fa|th)/"
+    r"^https://docs\.openclaw\.ai/(" + "|".join(re.escape(c) for c in LOCALE_CODES) + r")(?:/|$)"
 )
 REDIRECT_MARKERS = ("redirect to",)
 
@@ -38,6 +42,9 @@ def filter_english_urls(urls: list[str]) -> list[str]:
             path = url.replace(settings.docs_base_url, "").rstrip("/")
             if not path or path.endswith((".md", ".json", ".xml", ".txt")):
                 continue
+            segment = path.lstrip("/").split("/")[0]
+            if segment in LOCALE_CODES:
+                continue
             filtered.append(url)
     return sorted(set(filtered))
 
@@ -51,9 +58,9 @@ def url_to_path(url: str) -> str:
 def is_redirect_page(content: str) -> bool:
     lower = content.lower()
     if lower.startswith("---"):
-        frontmatter, _, body = content.partition("---", 3)
-        if frontmatter.count("---") >= 1:
-            check = (frontmatter + body[:200]).lower()
+        parts = content.split("---", 2)
+        if len(parts) >= 3:
+            check = (parts[1] + parts[2][:200]).lower()
             return any(marker in check for marker in REDIRECT_MARKERS)
     return any(marker in lower[:300] for marker in REDIRECT_MARKERS)
 
